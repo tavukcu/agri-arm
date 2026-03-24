@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriArm — Akıllı Tarımsal İlaçlama Sistemi</title>
+<meta property="og:title" content="AgriArm — AI Destekli Tarımsal Robot Kol">
+<meta property="og:description" content="DeepCamera AI + 5-DOF Robot Kol = %70'e varan ilaç tasarrufu">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #050508;
+    --surface: #0c0c14;
+    --surface2: #12121e;
+    --border: rgba(255,255,255,0.06);
+    --text: #e8e8ec;
+    --text2: #8888a0;
+    --accent: #22c55e;
+    --accent2: #15803d;
+    --accent-glow: rgba(34,197,94,0.15);
+    --blue: #3b82f6;
+    --orange: #f97316;
+    --red: #ef4444;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ===== SECTIONS ===== */
+  section {
+    min-height: 100vh;
+    scroll-snap-align: start;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-inner {
+    max-width: 1200px;
+    width: 100%;
+    z-index: 2;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    text-align: center;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(34,197,94,0.08) 0%, transparent 70%);
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: var(--accent-glow);
+    border: 1px solid rgba(34,197,94,0.25);
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 32px;
+    letter-spacing: 0.5px;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse-dot 2s ease infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.5); }
+  }
+
+  .hero h1 {
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -3px;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 .green { color: var(--accent); }
+  .hero h1 .white { color: #fff; }
+
+  .hero-sub {
+    font-size: clamp(18px, 2.5vw, 28px);
+    font-weight: 300;
+    color: var(--text2);
+    max-width: 700px;
+    margin: 0 auto 48px;
+    line-height: 1.5;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat .num {
+    font-size: 48px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .hero-stat .num .unit { font-size: 24px; color: var(--accent); }
+
+  .hero-stat .label {
+    font-size: 13px;
+    color: var(--text2);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text2);
+    font-size: 12px;
+    animation: float 2s ease infinite;
+  }
+
+  .scroll-hint .arrow {
+    width: 24px; height: 24px;
+    border-right: 2px solid var(--text2);
+    border-bottom: 2px solid var(--text2);
+    transform: rotate(45deg);
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ===== PROBLEM ===== */
+  .problem {
+    background: radial-gradient(ellipse 70% 50% at 30% 50%, rgba(239,68,68,0.06) 0%, transparent 70%);
+  }
+
+  .section-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+  }
+
+  .section-label.red { color: var(--red); }
+  .section-label.green { color: var(--accent); }
+  .section-label.blue { color: var(--blue); }
+  .section-label.purple { color: var(--purple); }
+  .section-label.orange { color: var(--orange); }
+  .section-label.cyan { color: var(--cyan); }
+
+  .section-title {
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -2px;
+    margin-bottom: 40px;
+  }
+
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 40px;
+  }
+
+  .problem-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    transition: all 0.3s;
+  }
+
+  .problem-card:hover {
+    border-color: rgba(239,68,68,0.3);
+    transform: translateY(-4px);
+  }
+
+  .problem-card .icon {
+    font-size: 36px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .problem-card h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+
+  .problem-card p {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  .problem-card .stat-highlight {
+    display: inline-block;
+    padding: 2px 10px;
+    background: rgba(239,68,68,0.1);
+    border-radius: 6px;
+    color: var(--red);
+    font-weight: 700;
+    font-size: 18px;
+    margin-top: 12px;
+  }
+
+  /* ===== SOLUTION ===== */
+  .solution {
+    background: radial-gradient(ellipse 70% 50% at 70% 50%, rgba(34,197,94,0.06) 0%, transparent 70%);
+  }
+
+  .solution-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 48px;
+  }
+
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 28px;
+    text-align: center;
+    min-width: 180px;
+    transition: all 0.3s;
+  }
+
+  .flow-step:hover {
+    border-color: rgba(34,197,94,0.3);
+    transform: translateY(-4px);
+  }
+
+  .flow-step .step-icon { font-size: 32px; margin-bottom: 8px; display: block; }
+  .flow-step .step-title { font-size: 15px; font-weight: 700; color: #fff; }
+  .flow-step .step-sub { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+  .flow-arrow {
+    font-size: 24px;
+    color: var(--accent);
+    font-weight: 300;
+  }
+
+  .savings-box {
+    margin-top: 48px;
+    background: linear-gradient(135deg, rgba(34,197,94,0.08) 0%, rgba(34,197,94,0.02) 100%);
+    border: 1px solid rgba(34,197,94,0.2);
+    border-radius: 20px;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    flex-wrap: wrap;
+  }
+
+  .savings-num {
+    font-size: 72px;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .savings-num span { font-size: 40px; }
+
+  .savings-detail h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .savings-detail p {
+    font-size: 15px;
+    color: var(--text2);
+    max-width: 400px;
+  }
+
+  /* ===== ARCHITECTURE ===== */
+  .arch {
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(59,130,246,0.06) 0%, transparent 70%);
+  }
+
+  .arch-diagram {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .arch-module {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    position: relative;
+    transition: all 0.3s;
+  }
+
+  .arch-module:hover {
+    border-color: rgba(59,130,246,0.3);
+    transform: scale(1.02);
+  }
+
+  .arch-module .mod-badge {
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    padding: 3px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .mod-badge.vision { background: var(--purple); color: #fff; }
+  .mod-badge.brain { background: var(--blue); color: #fff; }
+  .mod-badge.arm { background: var(--accent); color: #000; }
+
+  .arch-module h3 { font-size: 18px; font-weight: 700; color: #fff; margin: 8px 0; }
+  .arch-module .mod-stack { font-size: 12px; color: var(--text2); font-family: 'JetBrains Mono', monospace; line-height: 1.8; }
+  .arch-module .mod-stack .highlight { color: var(--cyan); }
+
+  .arch-connector {
+    text-align: center;
+    color: var(--text2);
+    font-size: 12px;
+  }
+
+  .arch-connector .proto {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 3px 8px;
+    background: var(--surface2);
+    border-radius: 4px;
+    display: block;
+    margin-top: 4px;
+  }
+
+  .arch-connector .arrow-line {
+    display: block;
+    color: var(--accent);
+    font-size: 20px;
+    margin: 4px 0;
+  }
+
+  /* ===== 3D MODEL ===== */
+  .model-section {
+    background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(168,85,247,0.06) 0%, transparent 70%);
+  }
+
+  .model-embed {
+    width: 100%;
+    height: 500px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-top: 32px;
+    position: relative;
+  }
+
+  .model-embed iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .model-specs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .spec-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .spec-item .spec-val {
+    font-size: 28px;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  .spec-item .spec-val .spec-unit { font-size: 14px; color: var(--purple); font-weight: 500; }
+
+  .spec-item .spec-label {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+
+  /* ===== BOM ===== */
+  .bom-section {
+    background: radial-gradient(ellipse 60% 50% at 40% 50%, rgba(249,115,22,0.06) 0%, transparent 70%);
+  }
+
+  .bom-table-wrap {
+    margin-top: 32px;
+    overflow-x: auto;
+  }
+
+  .bom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .bom-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bom-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .bom-table tr:hover td { background: var(--surface); }
+
+  .bom-table .cat-icon { margin-right: 6px; }
+
+  .bom-table .price { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--orange); }
+
+  .bom-total {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .bom-total-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 40px;
+    text-align: center;
+  }
+
+  .bom-total-box .total-val {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--orange);
+  }
+
+  .bom-total-box .total-label {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+
+  .bom-compare {
+    font-size: 14px;
+    color: var(--text2);
+    text-align: center;
+    margin-top: 16px;
+  }
+
+  .bom-compare strong { color: var(--accent); }
+
+  /* ===== TIMELINE ===== */
+  .timeline-section {
+    background: radial-gradient(ellipse 60% 50% at 60% 50%, rgba(6,182,212,0.06) 0%, transparent 70%);
+  }
+
+  .timeline {
+    position: relative;
+    margin-top: 48px;
+    padding-left: 60px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 24px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--blue), var(--purple), var(--orange), var(--cyan));
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 40px;
+  }
+
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -42px;
+    top: 6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    background: var(--bg);
+  }
+
+  .tl-item:nth-child(2)::before { border-color: var(--blue); }
+  .tl-item:nth-child(3)::before { border-color: var(--purple); }
+  .tl-item:nth-child(4)::before { border-color: var(--orange); }
+  .tl-item:nth-child(5)::before { border-color: var(--cyan); }
+
+  .tl-item .tl-week {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .tl-item:nth-child(1) .tl-week { color: var(--accent); }
+  .tl-item:nth-child(2) .tl-week { color: var(--blue); }
+  .tl-item:nth-child(3) .tl-week { color: var(--purple); }
+  .tl-item:nth-child(4) .tl-week { color: var(--orange); }
+  .tl-item:nth-child(5) .tl-week { color: var(--cyan); }
+
+  .tl-item h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  .tl-item p { font-size: 14px; color: var(--text2); max-width: 600px; }
+
+  .tl-item .tl-status {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+
+  .tl-status.done { background: rgba(34,197,94,0.15); color: var(--accent); }
+  .tl-status.next { background: rgba(59,130,246,0.15); color: var(--blue); }
+  .tl-status.later { background: rgba(255,255,255,0.05); color: var(--text2); }
+
+  /* ===== TEAM ===== */
+  .team-section {
+    background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(34,197,94,0.04) 0%, transparent 70%);
+    text-align: center;
+  }
+
+  .team-grid {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+
+  .team-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px 40px;
+    text-align: center;
+    min-width: 240px;
+  }
+
+  .team-card .avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 800;
+    color: #fff;
+    margin: 0 auto 16px;
+  }
+
+  .team-card h3 { font-size: 18px; font-weight: 700; color: #fff; }
+  .team-card .role { font-size: 13px; color: var(--accent); font-weight: 500; margin-top: 2px; }
+  .team-card .desc { font-size: 13px; color: var(--text2); margin-top: 8px; }
+
+  /* ===== CTA ===== */
+  .cta-section {
+    text-align: center;
+    background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(34,197,94,0.1) 0%, transparent 70%);
+  }
+
+  .cta-section .section-title { margin-bottom: 24px; }
+
+  .cta-links {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+
+  .cta-btn.primary {
+    background: var(--accent);
+    color: #000;
+  }
+
+  .cta-btn.primary:hover {
+    background: #16a34a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(34,197,94,0.3);
+  }
+
+  .cta-btn.secondary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .cta-btn.secondary:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  /* ===== NAV DOTS ===== */
+  .nav-dots {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 100;
+  }
+
+  .nav-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+
+  .nav-dot:hover, .nav-dot.active {
+    background: var(--accent);
+    transform: scale(1.3);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    section { padding: 40px 20px; }
+    .arch-diagram { grid-template-columns: 1fr; }
+    .arch-connector { transform: rotate(90deg); }
+    .hero-stats { gap: 24px; }
+    .savings-box { gap: 24px; padding: 24px; }
+    .savings-num { font-size: 48px; }
+    .nav-dots { display: none; }
+    .timeline { padding-left: 40px; }
+    .timeline::before { left: 14px; }
+    .tl-item::before { left: -32px; }
+  }
+
+  /* ===== ANIMATIONS ===== */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .delay-1 { transition-delay: 0.1s; }
+  .delay-2 { transition-delay: 0.2s; }
+  .delay-3 { transition-delay: 0.3s; }
+  .delay-4 { transition-delay: 0.4s; }
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<nav class="nav-dots" id="navDots"></nav>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero" id="s-hero">
+  <div class="section-inner">
+    <div class="hero-badge">Manisa / Ahmetli</div>
+    <h1>
+      <span class="white">Agri</span><span class="green">Arm</span>
+    </h1>
+    <p class="hero-sub">
+      Yapay zeka destekli robot kol ile<br>
+      akıllı tarımsal ilaçlama sistemi
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat fade-up">
+        <div class="num">%70<span class="unit">'e kadar</span></div>
+        <div class="label">ilaç tasarrufu</div>
+      </div>
+      <div class="hero-stat fade-up delay-1">
+        <div class="num">5<span class="unit">-DOF</span></div>
+        <div class="label">robot kol</div>
+      </div>
+      <div class="hero-stat fade-up delay-2">
+        <div class="num">900<span class="unit">mm</span></div>
+        <div class="label">erişim mesafesi</div>
+      </div>
+      <div class="hero-stat fade-up delay-3">
+        <div class="num">&lt;$250</div>
+        <div class="label">prototip maliyeti</div>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <span>Kaydır</span>
+      <div class="arrow"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PROBLEM ==================== -->
+<section class="problem" id="s-problem">
+  <div class="section-inner">
+    <div class="section-label red">Problem</div>
+    <h2 class="section-title">Geleneksel ilaçlama<br>neden sürdürülebilir değil?</h2>
+
+    <div class="problem-grid">
+      <div class="problem-card fade-up">
+        <span class="icon">🧪</span>
+        <h3>Aşırı İlaç Kullanımı</h3>
+        <p>Geleneksel yöntemle tüm tarla eşit dozda ilaçlanır. Sağlıklı bitkiler de gereksiz yere kimyasala maruz kalır.</p>
+        <div class="stat-highlight">Türkiye: 60.000+ ton/yıl</div>
+      </div>
+      <div class="problem-card fade-up delay-1">
+        <span class="icon">💰</span>
+        <h3>Yüksek Maliyet</h3>
+        <p>Tarım ilacı fiyatları her yıl %30-50 artıyor. Küçük çiftçi için en büyük gider kalemlerinden biri.</p>
+        <div class="stat-highlight">Dekar başı 500-2.000 TL</div>
+      </div>
+      <div class="problem-card fade-up delay-2">
+        <span class="icon">🌍</span>
+        <h3>Çevre & Sağlık</h3>
+        <p>Toprak ve su kaynakları kirleniyor. İlaç kalıntısı gıda güvenliğini tehdit ediyor. AB ihracat normları sıkılaşıyor.</p>
+        <div class="stat-highlight">AB red oranı %12</div>
+      </div>
+      <div class="problem-card fade-up delay-3">
+        <span class="icon">👁️</span>
+        <h3>Geç Teşhis</h3>
+        <p>Hastalık belirtileri çıplak gözle fark edildiğinde çoğunlukla çok geç kalınmış oluyor. Erken müdahale şansı kaçırılıyor.</p>
+        <div class="stat-highlight">%40 kayıp</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SOLUTION ==================== -->
+<section class="solution" id="s-solution">
+  <div class="section-inner">
+    <div class="section-label green">Çözüm</div>
+    <h2 class="section-title">Gör. Teşhis et. Sadece<br>gerekli olanı ilaçla.</h2>
+
+    <div class="solution-flow">
+      <div class="flow-step fade-up">
+        <span class="step-icon">📸</span>
+        <div class="step-title">Kamera</div>
+        <div class="step-sub">Gerçek zamanlı görüntü</div>
+      </div>
+      <div class="flow-arrow fade-up delay-1">→</div>
+      <div class="flow-step fade-up delay-1">
+        <span class="step-icon">🧠</span>
+        <div class="step-title">DeepCamera AI</div>
+        <div class="step-sub">YOLO hastalık tespiti</div>
+      </div>
+      <div class="flow-arrow fade-up delay-2">→</div>
+      <div class="flow-step fade-up delay-2">
+        <span class="step-icon">🎯</span>
+        <div class="step-title">Hedef Belirleme</div>
+        <div class="step-sub">Piksel → 3D koordinat</div>
+      </div>
+      <div class="flow-arrow fade-up delay-3">→</div>
+      <div class="flow-step fade-up delay-3">
+        <span class="step-icon">🤖</span>
+        <div class="step-title">Robot Kol</div>
+        <div class="step-sub">5-DOF hassas hareket</div>
+      </div>
+      <div class="flow-arrow fade-up delay-4">→</div>
+      <div class="flow-step fade-up delay-4">
+        <span class="step-icon">💧</span>
+        <div class="step-title">Seçici İlaçlama</div>
+        <div class="step-sub">Sadece hasta bitki</div>
+      </div>
+    </div>
+
+    <div class="savings-box fade-up">
+      <div>
+        <div class="savings-num">%30<span>–</span>70</div>
+      </div>
+      <div class="savings-detail">
+        <h3>Daha Az İlaç, Daha Sağlıklı Ürün</h3>
+        <p>Yapay zeka sadece hastalıklı bitkileri tespit eder, robot kol sadece o noktayı ilaçlar. Sağlıklı bitkiler dokunulmaz.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ARCHITECTURE ==================== -->
+<section class="arch" id="s-arch">
+  <div class="section-inner">
+    <div class="section-label blue">Sistem Mimarisi</div>
+    <h2 class="section-title">Üç katmanlı akıllı sistem</h2>
+
+    <div class="arch-diagram">
+      <!-- Vision Module -->
+      <div class="arch-module fade-up">
+        <div class="mod-badge vision">VISION</div>
+        <h3>DeepCamera AI</h3>
+        <div class="mod-stack">
+          <span class="highlight">YOLO 2026</span> nesne algılama<br>
+          Raspberry Pi 4 / 5<br>
+          USB Kamera / Tapo RTSP<br>
+          <span class="highlight">9 hastalık sınıfı</span><br>
+          CoreML / ONNX optimize
+        </div>
+      </div>
+
+      <!-- Connector 1 -->
+      <div class="arch-connector fade-up delay-1">
+        <span class="arrow-line">→</span>
+        <span class="proto">MQTT</span>
+      </div>
+
+      <!-- Brain Module -->
+      <div class="arch-module fade-up delay-2">
+        <div class="mod-badge brain">BRAIN</div>
+        <h3>Coordinator</h3>
+        <div class="mod-stack">
+          <span class="highlight">FastAPI</span> web dashboard<br>
+          Kamera→Kol koordinat dönüşümü<br>
+          <span class="highlight">CasADi</span> yol planlama<br>
+          Telegram bildirim<br>
+          İlaçlama karar motoru
+        </div>
+      </div>
+
+      <!-- Connector 2 -->
+      <div class="arch-connector fade-up delay-3">
+        <span class="arrow-line">→</span>
+        <span class="proto">MQTT</span>
+      </div>
+
+      <!-- Arm Module -->
+      <div class="arch-module fade-up delay-4">
+        <div class="mod-badge arm">ARM</div>
+        <h3>ESP32-S3 Controller</h3>
+        <div class="mod-stack">
+          <span class="highlight">5-DOF</span> ters kinematik<br>
+          2× NEMA23 step motor<br>
+          1× NEMA17 step motor<br>
+          2× MG996R servo<br>
+          <span class="highlight">200Hz</span> kontrol döngüsü<br>
+          Pompa + selenoid valf
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 3D MODEL ==================== -->
+<section class="model-section" id="s-model">
+  <div class="section-inner">
+    <div class="section-label purple">3D Tasarım</div>
+    <h2 class="section-title">CadQuery ile parametrik mühendislik</h2>
+
+    <div class="model-embed fade-up">
+      <iframe src="https://tavukcu.github.io/agri-arm/" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"></iframe>
+    </div>
+
+    <div class="model-specs">
+      <div class="spec-item fade-up">
+        <div class="spec-val">900<span class="spec-unit">mm</span></div>
+        <div class="spec-label">Erişim Mesafesi</div>
+      </div>
+      <div class="spec-item fade-up delay-1">
+        <div class="spec-val">5<span class="spec-unit">DOF</span></div>
+        <div class="spec-label">Serbestlik Derecesi</div>
+      </div>
+      <div class="spec-item fade-up delay-2">
+        <div class="spec-val">~3<span class="spec-unit">kg</span></div>
+        <div class="spec-label">Kol Ağırlığı</div>
+      </div>
+      <div class="spec-item fade-up delay-3">
+        <div class="spec-val">2<span class="spec-unit">kg</span></div>
+        <div class="spec-label">Taşıma Kapasitesi</div>
+      </div>
+      <div class="spec-item fade-up delay-4">
+        <div class="spec-val">7<span class="spec-unit">parça</span></div>
+        <div class="spec-label">3D Baskı Parça</div>
+      </div>
+      <div class="spec-item fade-up delay-4">
+        <div class="spec-val">PETG</div>
+        <div class="spec-label">Dış Mekan Dayanıklı</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BOM ==================== -->
+<section class="bom-section" id="s-bom">
+  <div class="section-inner">
+    <div class="section-label orange">Maliyet</div>
+    <h2 class="section-title">Endüstriyel fiyatın %1-3'ü</h2>
+
+    <div class="bom-table-wrap fade-up">
+      <table class="bom-table">
+        <thead>
+          <tr><th>Bileşen</th><th>Model</th><th>Adet</th><th>Fiyat (TRY)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="cat-icon">⚙️</span> Step Motor (Taban+Omuz)</td><td>NEMA23 2.5-3Nm</td><td>2</td><td class="price">750 – 1,100</td></tr>
+          <tr><td><span class="cat-icon">⚙️</span> Step Motor (Dirsek)</td><td>NEMA17 0.9Nm</td><td>1</td><td class="price">180 – 300</td></tr>
+          <tr><td><span class="cat-icon">⚙️</span> Servo (Bilek ×2)</td><td>MG996R 13kg.cm</td><td>2</td><td class="price">160 – 300</td></tr>
+          <tr><td><span class="cat-icon">🔌</span> Step Sürücü</td><td>TMC2209</td><td>3</td><td class="price">150 – 300</td></tr>
+          <tr><td><span class="cat-icon">🧠</span> Kontrolcü</td><td>ESP32-S3 DevKit</td><td>1</td><td class="price">250 – 400</td></tr>
+          <tr><td><span class="cat-icon">🧠</span> Vision İşlemci</td><td>Raspberry Pi 4</td><td>1</td><td class="price">1,500 – 3,000</td></tr>
+          <tr><td><span class="cat-icon">📸</span> Kamera</td><td>USB 1080p</td><td>1</td><td class="price">300 – 600</td></tr>
+          <tr><td><span class="cat-icon">🔋</span> Güç Kaynağı</td><td>24V 15A SMPS</td><td>1</td><td class="price">200 – 400</td></tr>
+          <tr><td><span class="cat-icon">💧</span> Pompa + Valf + Nozul</td><td>12V diyafram</td><td>1 set</td><td class="price">320 – 630</td></tr>
+          <tr><td><span class="cat-icon">🖨️</span> 3D Baskı Filament</td><td>PETG 1.75mm</td><td>2 kg</td><td class="price">400 – 600</td></tr>
+          <tr><td><span class="cat-icon">🔩</span> Mekanik (yatak, kayış, vida)</td><td>Çeşitli</td><td>—</td><td class="price">550 – 1,100</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="bom-total fade-up">
+      <div class="bom-total-box">
+        <div class="total-val">4,760 – 8,730</div>
+        <div class="total-label">Toplam (TRY)</div>
+      </div>
+      <div class="bom-total-box">
+        <div class="total-val">$132 – $242</div>
+        <div class="total-label">Toplam (USD)</div>
+      </div>
+    </div>
+
+    <p class="bom-compare fade-up">
+      Endüstriyel tarım robotu: <strong>$10,000 – $50,000</strong> &nbsp;|&nbsp; AgriArm prototipi: <strong>&lt;$250</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ==================== TIMELINE ==================== -->
+<section class="timeline-section" id="s-timeline">
+  <div class="section-inner">
+    <div class="section-label cyan">Yol Haritası</div>
+    <h2 class="section-title">12 haftalık geliştirme planı</h2>
+
+    <div class="timeline">
+      <div class="tl-item fade-up">
+        <div class="tl-week">Hafta 1 – 3</div>
+        <h3>Faz 1: AI Model Eğitimi</h3>
+        <p>PlantVillage + Roboflow veri seti ile YOLO26n fine-tuning. 9 hastalık/zararlı sınıfı. DeepCamera skill entegrasyonu.</p>
+        <span class="tl-status next">Sıradaki</span>
+      </div>
+
+      <div class="tl-item fade-up delay-1">
+        <div class="tl-week">Hafta 3 – 6</div>
+        <h3>Faz 2: Mekanik Tasarım</h3>
+        <p>CadQuery ile 5-DOF robot kol + ilaçlama nozul tasarımı. PETG 3D baskı. Motor ve yatak montajı.</p>
+        <span class="tl-status done">Tamamlandı</span>
+      </div>
+
+      <div class="tl-item fade-up delay-2">
+        <div class="tl-week">Hafta 4 – 7</div>
+        <h3>Faz 3: ESP32 Firmware</h3>
+        <p>Step motor + servo kontrol. 5-DOF ters kinematik çözücü. MQTT komut protokolü. Güvenlik limitleri.</p>
+        <span class="tl-status next">Sıradaki</span>
+      </div>
+
+      <div class="tl-item fade-up delay-3">
+        <div class="tl-week">Hafta 6 – 9</div>
+        <h3>Faz 4: Sistem Entegrasyonu</h3>
+        <p>DeepCamera algılama → hedef koordinat → kol hareketi → ilaçlama pipeline. Web dashboard + Telegram alert.</p>
+        <span class="tl-status later">Planlanan</span>
+      </div>
+
+      <div class="tl-item fade-up delay-4">
+        <div class="tl-week">Hafta 9 – 12</div>
+        <h3>Faz 5: Saha Testi</h3>
+        <p>Traktör montaj aparatı. Gerçek tarla koşullarında test. Kalibrasyon ve optimizasyon. Manisa zeytinlikleri.</p>
+        <span class="tl-status later">Planlanan</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TEAM ==================== -->
+<section class="team-section" id="s-team">
+  <div class="section-inner">
+    <div class="section-label green">Ekip</div>
+    <h2 class="section-title">Arkasındaki insanlar</h2>
+
+    <div class="team-grid">
+      <div class="team-card fade-up">
+        <div class="avatar">HD</div>
+        <h3>Halil Dincer</h3>
+        <div class="role">Yazılım & Donanım</div>
+        <div class="desc">Full-stack geliştirici. 10+ canlı proje. ESP32, CadQuery, AI/ML deneyimi. Sistem mimarisi ve firmware.</div>
+      </div>
+      <div class="team-card fade-up delay-1">
+        <div class="avatar" style="background: linear-gradient(135deg, var(--orange), var(--red));">ED</div>
+        <h3>Eniste</h3>
+        <div class="role">Tarım & Saha Operasyonu</div>
+        <div class="desc">Tarım arazisi ve saha deneyimi. DeepCamera AI kamera projesi ortağı. Gerçek dünya test ve geri bildirimi.</div>
+      </div>
+      <div class="team-card fade-up delay-2">
+        <div class="avatar" style="background: linear-gradient(135deg, var(--cyan), var(--blue));">AI</div>
+        <h3>DeepCamera</h3>
+        <div class="role">AI Platformu</div>
+        <div class="desc">Açık kaynak AI kamera platformu. YOLO 2026, çoklu donanım desteği, skill mimarisi. Mevcut ve çalışıyor.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CTA ==================== -->
+<section class="cta-section" id="s-cta">
+  <div class="section-inner">
+    <div class="section-label green">Başlayalım</div>
+    <h2 class="section-title">Tarımın geleceği<br>akıllı ve hassas</h2>
+    <p class="hero-sub" style="margin-top: 16px;">
+      AgriArm ile her damla ilaç doğru yere gider.<br>
+      Daha az kimyasal, daha sağlıklı ürün, daha kârlı çiftçi.
+    </p>
+
+    <div class="cta-links">
+      <a href="https://tavukcu.github.io/agri-arm/" target="_blank" class="cta-btn primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        3D Modeli İncele
+      </a>
+      <a href="https://github.com/tavukcu/agri-arm" target="_blank" class="cta-btn secondary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub Repo
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// Nav dots
+const sections = document.querySelectorAll('section');
+const dotsNav = document.getElementById('navDots');
+
+sections.forEach((s, i) => {
+  const dot = document.createElement('button');
+  dot.className = 'nav-dot';
+  dot.title = s.id.replace('s-','');
+  dot.onclick = () => s.scrollIntoView({ behavior: 'smooth' });
+  dotsNav.appendChild(dot);
+});
+
+const dots = dotsNav.querySelectorAll('.nav-dot');
+
+const secObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const idx = [...sections].indexOf(e.target);
+      dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    }
+  });
+}, { threshold: 0.5 });
+
+sections.forEach(s => secObserver.observe(s));
+</script>
+
+</body>
+</html>
